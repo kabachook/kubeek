@@ -1,0 +1,8 @@
+
+kubernetes_version: "1.17"
+
+docker_apt_key: "https://download.docker.com/linux/ubuntu/gpg"
+docker_apt_repository: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+kubernetes_apt_key: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial main"

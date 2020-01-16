@@ -1,0 +1,61 @@
+---
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
+- name: Ensure dependencies are installed.
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - gnupg-agent
+    state: present
+    
+- name: Add Docker apt key.
+  apt_key:
+    url: "{{ docker_apt_key }}"
+    state: present
+  register: add_docker_repository_key
+
+- name: Add Docker repository.
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    state: present
+    update_cache: true
+
+- name: Install Docker packages.
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  
+- name: Add Kubernetes apt key.
+  apt_key:
+    url: "{{ kubernetes_apt_key }}"
+    state: present
+  register: add_kube_repository_key
+
+- name: Add Kubernetes repository.
+  apt_repository:
+    repo: "{{ kubernetes_apt_repository }}"
+    state: present
+    update_cache: true
+
+- name: Add Kubernetes apt preferences file to pin a version.
+  template:
+    src: apt-preferences-kubernetes.j2
+    dest: /etc/apt/preferences.d/kubernetes
+
+- name: Install Kubernetes packages.
+  package:
+    name:
+      - kubeadm
+      - kubectl
+      - kubelet
+    state: present
