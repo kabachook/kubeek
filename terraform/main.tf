@@ -1,7 +1,8 @@
 module "masters" {
-    source = "./modules/master"
+  source = "./modules/kube"
 
-    master_type = "DEV1-S"
-    master_count = 2
-    image = "ubuntu-bionic"
+  master_type  = "DEV1-S"
+  master_count = 1
+  image        = "ubuntu-bionic"
 }
+
