@@ -1,4 +1,13 @@
 ---
+- name: Disable swap
+  shell: swapoff -a
+
+- name: Comment out swap entries in /etc/fstab
+  replace:
+    path: /etc/fstab
+    regexp: '(.*swap*)'
+    replace: '#\1'
+
 - name: Update and upgrade apt packages
   apt:
     upgrade: yes
@@ -59,3 +68,12 @@
       - kubectl
       - kubelet
     state: present
+
+- name: Change docker default network
+  shell: | 
+    mkdir -p /etc/docker
+    echo '{ "bip": "10.37.0.1/16", 
+    "exec-opts": ["native.cgroupdriver=systemd"],
+    "log-driver": "json-file",
+    "log-opts": {"max-size": "100m"},
+    "storage-driver": "overlay2"}' > /etc/docker/daemon.json
