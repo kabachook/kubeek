@@ -72,8 +72,13 @@
 - name: Change docker default network
   shell: | 
     mkdir -p /etc/docker
-    echo '{ "bip": "10.37.0.1/16", 
-    "exec-opts": ["native.cgroupdriver=systemd"],
+    echo '{ "exec-opts": ["native.cgroupdriver=systemd"],
     "log-driver": "json-file",
     "log-opts": {"max-size": "100m"},
     "storage-driver": "overlay2"}' > /etc/docker/daemon.json
+
+- name: Restart docker service
+  service:
+    name: docker
+    daemon_reload: yes
+    state: restarted

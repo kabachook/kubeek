@@ -1,0 +1,47 @@
+---
+- name: Pull kubernetes docker images
+  shell: kubeadm config images pull
+
+- name: Resetting kubeadm
+  shell: kubeadm reset -f
+  register: output
+
+- name: Initializing Kubernetes cluster
+  shell: kubeadm init --pod-network-cidr={{pod_network_cidr}}
+  register: output
+
+- name: Store logs and token for future purpose.
+  copy: 
+    content: "{{ output.stdout }}"
+    dest: "{{ ansible_env.HOME }}/{{ token_file }}"
+
+- name: Copy kubeconfig
+  shell: |
+    mkdir -p $HOME/.kube
+    cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
+    chown $(id -u):$(id -g) $HOME/.kube/config
+
+- name: Copy kubeconfig to localhost
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: admin.conf
+    remote_src: yes
+
+- name: Install Cilium
+  shell: kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/{{ cilium_version }}/install/kubernetes/quick-install.yaml
+
+# - name: Untaint Master
+#   command: kubectl taint nodes --all node-role.kubernetes.io/master-
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+
+- debug: var=join_command
+
+- name: Copy join command to local file
+  vars: 
+    ansible_connection: local
+  copy: 
+    content: "{{ join_command.stdout_lines[0] }}"
+    dest: ./{{ token_file }}

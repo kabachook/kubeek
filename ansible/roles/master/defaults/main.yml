@@ -1,0 +1,2 @@
+pod_network_cidr: "10.217.0.0/16"
+cilium_version: "master"

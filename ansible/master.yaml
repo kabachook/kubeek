@@ -1,0 +1,4 @@
+---
+- hosts: module_masters_masters
+  roles:
+    - master

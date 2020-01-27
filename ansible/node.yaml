@@ -1,0 +1,4 @@
+---
+- hosts: module_nodes_nodes
+  roles:
+    - node

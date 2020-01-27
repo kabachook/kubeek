@@ -1,0 +1,8 @@
+---
+- name: Copy join token
+  copy:
+    src: ./{{ token_file }}
+    dest: "{{ ansible_env.HOME }}/join.sh"
+
+- name: Join cluster
+  shell: sh join.sh
