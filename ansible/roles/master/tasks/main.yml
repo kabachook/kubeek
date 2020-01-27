@@ -27,6 +27,11 @@
     dest: admin.conf
     remote_src: yes
 
+- name: Copy kubernetes config to localhost
+  copy: 
+    src: "/etc/kubernetes/admin.conf"
+    dest: "./admin.conf"
+
 - name: Install Cilium
   shell: kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/{{ cilium_version }}/install/kubernetes/quick-install.yaml
 
